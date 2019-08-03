@@ -57,6 +57,21 @@ J = -\frac{1}{m}\sum_{i=1}^{m}y^{(i)}\log(a^{(i)})+(1-y^{(i)})\log(1-a^{(i)}) \\
 
 $$
 
+### $\frac{\partial J}{\partial W}$
+$$
+W = \frac{1}{m}{
+    \begin{pmatrix}
+      \frac{\partial J}{\partial w^{(1)}_{0}} + \frac{\partial J}{\partial w^{(2)}_{0}} +...+ \frac{\partial J}{\partial w^{(m)}_{0}}\\
+      \frac{\partial J}{\partial w^{(1)}_{1}} + \frac{\partial J}{\partial w^{(2)}_{1}} +...+ \frac{\partial J}{\partial w^{(m)}_{1}}\\
+      ...................................\\
+      \frac{\partial J}{\partial w^{(1)}_{j}} + \frac{\partial J}{\partial w^{(2)}_{j}} +...+ \frac{\partial J}{\partial w^{(m)}_{j}}\\
+      ....................................\\
+      \frac{\partial J}{\partial w^{(1)}_{n-1}} + \frac{\partial J}{\partial w^{(2)}_{n-1}} +...+ \frac{\partial J}{\partial w^{(m)}_{n-1}}\\
+    \end{pmatrix}
+  }_{n×1}
+$$
+
+
 ### 代价函数对W求偏导
 $$
   \frac{\partial J}{\partial W} = \frac{1}{m} {
@@ -93,12 +108,6 @@ A-Y=(a^{(0)}-y^{(0)}, a^{(1)}-y^{(1)}, ..., a^{(m-1)}-y^{(m-1)}, a^{(m)}-y^{(m)}
 $$
 
 ### 继续推导
-
-$$
-
-f(x)=sin(x)
-
-$$
 
 ### $z^{(i)}$
 $$
