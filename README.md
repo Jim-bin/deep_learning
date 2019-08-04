@@ -9,4 +9,4 @@ $$f(x) = sin(x) $$
 $f(x)=sin(x)$
 
 
-
+\[ f(x)=sin(x)+cos(x)+x^2 \]
