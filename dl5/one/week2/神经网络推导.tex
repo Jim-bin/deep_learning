@@ -1,0 +1,533 @@
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+%
+\documentclass[
+]{article}
+\usepackage{lmodern}
+\usepackage{amssymb,amsmath}
+\usepackage{ifxetex,ifluatex}
+\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+  \usepackage{unicode-math}
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
+\makeatother
+\usepackage{xcolor}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\IfFileExists{bookmark.sty}{\usepackage{bookmark}}{\usepackage{hyperref}}
+\hypersetup{
+  hidelinks,
+  pdfcreator={LaTeX via pandoc}}
+\urlstyle{same} % disable monospaced font for URLs
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{-\maxdimen} % remove section numbering
+
+\date{}
+
+\begin{document}
+
+\hypertarget{header-n0}{%
+\section{三层神经网络：一个输入层，一个隐藏层，一个输出层}\label{header-n0}}
+
+\hypertarget{header-n2}{%
+\subsection{1. 从输入层到隐藏层}\label{header-n2}}
+
+\hypertarget{header-n3}{%
+\subsubsection{\texorpdfstring{\(x^{(1)}\)}{x\^{}\{(1)\}}}\label{header-n3}}
+
+\(x^{(1)} = {
+    \begin{pmatrix}
+      x^{(1)}_{1}\\
+      x^{(1)}_{2} \\
+      ...\\
+      x^{(1)}_{j}\\
+      ...\\
+      x^{(1)}_{n1}
+    \end{pmatrix}
+  }_{n1×1}\)
+
+\hypertarget{header-n5}{%
+\subsubsection{\texorpdfstring{\(X\)}{X}}\label{header-n5}}
+
+\(X={\begin{pmatrix}
+      x^{(1)}_{1} & x^{(2)}_{1} &...& x^{(i)}_{1} &...& x^{(m)}_{1} & \\
+      x^{(1)}_{2} & x^{(2)}_{2} &...& x^{(i)}_{2} &...& x^{(m)}_{2} & \\
+      ...&...&...&...&...&...\\
+      x^{(1)}_{j} & x^{(2)}_{j} &...& x^{(i)}_{j} &...& x^{(m)}_{j} & \\
+      ...&...&...&...&...&...\\
+      x^{(1)}_{n1} & x^{(2)}_{n1} &...& x^{(i)}_{n1} &...& x^{(m)}_{n1} & \\
+    \end{pmatrix}}_{n1×m}\)
+
+\hypertarget{header-n7}{%
+\subsubsection{\texorpdfstring{\(y^{(1)}\)}{y\^{}\{(1)\}}}\label{header-n7}}
+
+\(y^{(1)}={y^{(1)}}\)
+
+\hypertarget{header-n9}{%
+\subsubsection{\texorpdfstring{\(Y\)}{Y}}\label{header-n9}}
+
+\(Y={
+    \begin{pmatrix}
+      y^{(1)} & y^{(2)} &...& y^{(i)} &...& y^{(m)} \\
+    \end{pmatrix}
+  }_{1×m}\)
+
+\hypertarget{header-n11}{%
+\subsubsection{\texorpdfstring{\(W^{(1)}_{1}\)}{W\^{}\{(1)\}\_\{1\}}}\label{header-n11}}
+
+\[W^{(1)}_{1} = {
+    \begin{pmatrix}
+     W^{(1)}_{1,1} \\
+     W^{(1)}_{1,2} \\
+     ...\\
+     W^{(1)}_{1,n1} \\
+    \end{pmatrix}
+  }_{n1×1}\]
+
+\hypertarget{header-n13}{%
+\subsubsection{\texorpdfstring{\(W^{(1)}\)}{W\^{}\{(1)\}}}\label{header-n13}}
+
+\[W^{(1)} = {
+    \begin{pmatrix}
+      W^{(1)}_{1,1} & W^{(1)}_{2,1} & ... & W^{(1)}_{j,1} &...& W^{(1)}_{n2,1} &  \\
+      W^{(1)}_{1,2} & W^{(1)}_{2,2} & ... & W^{(1)}_{j,2} &...& W^{(1)}_{n2,2} &  \\
+      ...\\
+      W^{(1)}_{1,i} & W^{(1)}_{2,i} & ... & W^{(1)}_{j,i} &...& W^{(1)}_{n2,i} &  \\
+      ...\\
+      W^{(1)}_{1,n1} & W^{(1)}_{2,n1} & ... & W^{(1)}_{j,n1} &...& W^{(1)}_{n2,n1} &  \\
+    \end{pmatrix}
+  }_{n1×n2}\]
+
+\hypertarget{header-n15}{%
+\subsubsection{\texorpdfstring{\(b^{(1)}_{1}\)}{b\^{}\{(1)\}\_\{1\}}}\label{header-n15}}
+
+\hypertarget{header-n16}{%
+\subsubsection{\texorpdfstring{\(b^{(1)}\)}{b\^{}\{(1)\}}}\label{header-n16}}
+
+\[b^{(1)} = {\begin{pmatrix}
+  b^{(1)}_{1} \\
+  b^{(1)}_{2} \\
+  ... \\
+  b^{(1)}_{n2}
+\end{pmatrix}}_{n2×1}\]
+
+\hypertarget{header-n18}{%
+\subsubsection{\texorpdfstring{\(z^{(1)}_{1,i}\)}{z\^{}\{(1)\}\_\{1,i\}}}\label{header-n18}}
+
+\(z^{(1)}_{1,i} = (W^{(1)}){^T}x^{(i)}+b^{(1)}=W^{(1)}_{1,1}x^{(i)}_{1} + W^{(1)}_{1,2}x^{(i)}_{2} + ... + W^{(1)}_{1,n1}x^{(i)}_{n1}+b^{(1)}_{1}\)
+
+\(z^{(1)}_{,i}
+={\begin{pmatrix}
+  W^{(1)}_{1,1}x^{(1)}_{1} + W^{(1)}_{1,2}x^{(1)}_{2} + ... + W^{(1)}_{1,n1}x^{(1)}_{n1}+b^{(1)}_{1} \\
+  W^{(1)}_{2,1}x^{(1)}_{1} + W^{(1)}_{2,2}x^{(1)}_{2} + ... + W^{(1)}_{2,n1}x^{(1)}_{n1}+b^{(1)}_{2} \\
+  ..................................................\\
+  W^{(1)}_{n2,1}x^{(1)}_{1} + W^{(1)}_{n2,2}x^{(1)}_{2} + ... + W^{(1)}_{n2,n1}x^{(1)}_{n1}+b^{(1)}_{n2} \\
+\end{pmatrix}}_{n2×1}\)
+
+\hypertarget{header-n21}{%
+\subsubsection{\texorpdfstring{所有样本的第一层\(Z^{(1)}\)}{所有样本的第一层Z\^{}\{(1)\}}}\label{header-n21}}
+
+\[Z^{(1)}={\begin{pmatrix}
+    z^{(1)}_{,1} & z^{(1)}_{,2} & ... & z^{(1)}_{,m} \\
+  \end{pmatrix}}_{n2×m}\]
+
+\[Z^{(1)}={\begin{pmatrix}
+    z^{(1)}_{1,1} & z^{(1)}_{1,2} & ... & z^{(1)}_{1,m} \\
+    z^{(1)}_{2,1} & z^{(1)}_{2,2} & ... & z^{(1)}_{2,m} \\
+    ...\\
+    z^{(1)}_{n2,1} & z^{(1)}_{n2,2} & ... & z^{(1)}_{n2,m} \\
+  \end{pmatrix}}_{n2×m}\]
+
+\hypertarget{header-n24}{%
+\subsubsection{\texorpdfstring{\(a^{(1)}_{1,i}\)}{a\^{}\{(1)\}\_\{1,i\}}}\label{header-n24}}
+
+\[a^{(1)}_{1,i} = sigmoid(z^{(1)}_{1,i}) = sigmoid((W^{(1)})^{T}x^{(i)}+ b^{(1)}_{1})\]
+
+\hypertarget{header-n26}{%
+\subsubsection{\texorpdfstring{所有样本的第一层\(A^{(1)}\)}{所有样本的第一层A\^{}\{(1)\}}}\label{header-n26}}
+
+\[A^{(1)} = {\begin{pmatrix}
+    a^{(1)}_{,1} &  a^{(1)}_{,2} & ... & a^{(1)}_{,m} \\
+  \end{pmatrix}}_{n2×m}\]
+
+\[A^{(1)}={\begin{pmatrix}
+    a^{(1)}_{1,1} & a^{(1)}_{1,2} & ... & a^{(1)}_{1,m} \\
+    a^{(1)}_{2,1} & a^{(1)}_{2,2} & ... & a^{(1)}_{2,m} \\
+    ...\\
+    a^{(1)}_{n2,1} & a^{(1)}_{n2,2} & ... & a^{(1)}_{n2,m} \\
+  \end{pmatrix}}_{n2×m}\]
+
+\hypertarget{header-n29}{%
+\subsection{2. 从隐藏层到输出层}\label{header-n29}}
+
+\hypertarget{header-n30}{%
+\subsubsection{\texorpdfstring{\(W^{(2)}_{1}\)}{W\^{}\{(2)\}\_\{1\}}}\label{header-n30}}
+
+\[W^{(2)}_{1} = {
+    \begin{pmatrix}
+     W^{(2)}_{1,1} \\
+     W^{(2)}_{1,2} \\
+     ...\\
+     W^{(2)}_{1,n2} \\
+    \end{pmatrix}
+  }_{n2×1}\]
+
+\hypertarget{header-n32}{%
+\subsubsection{\texorpdfstring{\(W^{(2)}\)}{W\^{}\{(2)\}}}\label{header-n32}}
+
+\[W^{(2)} = {
+    \begin{pmatrix}
+     W^{(2)}_{1,1} \\
+     W^{(2)}_{1,2} \\
+     ...\\
+     W^{(2)}_{1,n2} \\
+    \end{pmatrix}
+  }_{n2×1}\]
+
+\hypertarget{header-n34}{%
+\subsubsection{\texorpdfstring{\(b^{(2)}_{1}\)}{b\^{}\{(2)\}\_\{1\}}}\label{header-n34}}
+
+\hypertarget{header-n35}{%
+\subsubsection{\texorpdfstring{\(b^{(2)}\)}{b\^{}\{(2)\}}}\label{header-n35}}
+
+\[b^{(1)} = {\begin{pmatrix}
+  b^{(2)}_{1}
+\end{pmatrix}}_{1×1}\]
+
+\hypertarget{header-n37}{%
+\subsubsection{\texorpdfstring{\(z^{(2)}_{1}\)}{z\^{}\{(2)\}\_\{1\}}}\label{header-n37}}
+
+\(z^{(2)}_{1} = (W^{(2)}){^T}a^{(1)}+b^{(2)}\)
+
+\[z^{(2)}_{1}
+={\begin{pmatrix}
+  W^{(2)}_{1,1}a^{(1)}_{1} + W^{(2)}_{1,2}a^{(1)}_{2} + ... + W^{(1)}_{1,n2}a^{(1)}_{n2}+b^{(2)}_{1}
+\end{pmatrix}}_{1×1}\]
+
+\hypertarget{header-n40}{%
+\subsubsection{\texorpdfstring{\(Z^{(2)}\)：所有样本的\(z^{(2)}\)}{Z\^{}\{(2)\}：所有样本的z\^{}\{(2)\}}}\label{header-n40}}
+
+\[Z^{(2)}={\begin{pmatrix}
+  z^{(2)}_{1} & z^{(2)}_{2} & ... & z^{(2)}_{m}
+\end{pmatrix}}_{1×m}\]
+
+\hypertarget{header-n42}{%
+\subsubsection{\texorpdfstring{\(a^{(2)}_{1}\)}{a\^{}\{(2)\}\_\{1\}}}\label{header-n42}}
+
+\[a^{(2)}_{1} = sigmoid(z^{(2)}_{1}) = sigmoid((W^{(2)})^{T}a^{(1)})\]
+
+\hypertarget{header-n44}{%
+\subsubsection{\texorpdfstring{\(A^{(2)}\)：所有样本的\(a^{(2)}\)}{A\^{}\{(2)\}：所有样本的a\^{}\{(2)\}}}\label{header-n44}}
+
+\[A^{(2)} = {\begin{pmatrix}
+  a^{(2)}_{1} & a^{(2)}_{2} & ... & a^{(2)}_{m}
+\end{pmatrix}}_{1×m}\]
+
+\hypertarget{header-n46}{%
+\subsection{3. 反向传播}\label{header-n46}}
+
+\hypertarget{header-n47}{%
+\subsubsection{\texorpdfstring{每个样本的误差函数\(j^{(1)}\)}{每个样本的误差函数j\^{}\{(1)\}}}\label{header-n47}}
+
+\[j^{(i)} = -[y^{(i)}log(a^{(2)}_{1,i})+（1-y^{(i)})log(1-a^{(2)}_{1,i})]\]
+
+\hypertarget{header-n49}{%
+\subsubsection{所有样本的误差函数}\label{header-n49}}
+
+\[J = -\frac{1}{m}\sum_{i=1}^{m}[y^{(i)}log(a^{(2)}_{1,i})+（1-y^{(i)})log(1-a^{(2)}_{1,i})]\]
+
+\hypertarget{header-n51}{%
+\subsubsection{单个样本求偏导}\label{header-n51}}
+
+\[j^{(i)} = -[y^{(i)}log(a^{(2)}_{1,i})+（1-y^{(i)})log(1-a^{(2)}_{1,i})]\]
+
+\[\frac{\partial{j^{(i)}}}{\partial{a^{(2)}_{1,i}}} = \frac{a^{(2)}_{1,i}-y^{(i)}}{a^{(2)}_{1,i}(1-a^{(2)}_{1,i})}\]
+
+\[\frac{\partial{a^{(2)}_{1,i}}}{\partial{z^{(2)}_{1,i}}} = {a^{(2)}_{1,i}(1-a^{(2)}_{1,i})}\]
+
+\[\frac{\partial{z^{(2)}_{1,i}}}{\partial{W^{(2)}_{1,1}}} = {a^{(1)}_{1,i}}\]
+
+\[\frac{\partial{z^{(2)}_{1,i}}}{\partial{W^{(2)}_{1,2}}} = {a^{(1)}_{2,i}}\]
+
+\[\frac{\partial{z^{(2)}_{1,i}}}{\partial{W^{(2)}_{1,j}}} = {a^{(1)}_{j,i}}\]
+
+\(...\)
+
+\[\frac{\partial{z^{(2)}_{1,i}}}{\partial{W^{(2)}}} = {\begin{pmatrix}
+  {a^{(1)}_{1,i}} \\
+  {a^{(1)}_{2,i}} \\
+  ...\\
+  {a^{(1)}_{j,i}} \\
+  ...\\
+  {a^{(1)}_{n2,i}}
+\end{pmatrix}}_{n2×1}\]
+
+\(\frac{\partial{z^{(2)}_{1,i}}}{\partial{b^{(2)}_{1}}} = 1\)
+
+\[\frac{\partial{j^{(i)}}}{\partial{W^{(2)}}} = \frac{\partial{j^{(i)}}}{\partial{a^{(2)}_{1,i}}} \frac{\partial{a^{(2)}_{1,i}}}{\partial{z^{(2)}_{1,i}}}\frac{\partial{z^{(2)}_{1,i}}}{\partial{W^{(2)}}} = a^{(2)}_{1,i}-y^{(i)}{\begin{pmatrix}
+  {a^{(1)}_{1,i}} \\
+  {a^{(1)}_{2,i}} \\
+  ...\\
+  {a^{(1)}_{j,i}} \\
+  ...\\
+  {a^{(1)}_{n2,i}}
+\end{pmatrix}}_{n2×1}\]
+
+\[\frac{\partial{j^{(i)}}}{\partial{W^{(2)}_{1,1}}} = \frac{\partial{j^{(i)}}}{\partial{a^{(2)}_{1,i}}} \frac{\partial{a^{(2)}_{1,i}}}{\partial{z^{(2)}_{1,i}}}\frac{\partial{z^{(2)}_{1,i}}}{\partial{W^{(2)}_{{1,1}}}} = (a^{(2)}_{1,i}-y^{(i)}){a^{(1)}_{1,i}}\]
+
+\[\frac{\partial{j^{(i)}}}{\partial{W^{(2)}_{1,j}}} = \frac{\partial{j^{(i)}}}{\partial{a^{(2)}_{1,i}}} \frac{\partial{a^{(2)}_{1,i}}}{\partial{z^{(2)}_{1,i}}}\frac{\partial{z^{(2)}_{1,i}}}{\partial{W^{(2)}_{{1,j}}}} = (a^{(2)}_{1,i}-y^{(i)}){a^{(1)}_{j,i}}\]
+
+\[\frac{\partial{J}}{\partial{W^{(2)}_{1,j}}} = \frac{1}{m}\sum_{i=1}^{m}(a^{(2)}_{1,i}-y^{(i)}){a^{(1)}_{j,i}} \\
+= \frac{1}{m}[(a^{(2)}_{1,1}-y^{(1)})a^{(1)}_{j,1} + (a^{(2)}_{1,2}-y^{(2)})a^{(1)}_{j,2} + ... + (a^{(2)}_{1,m}-y^{(m)})a^{(1)}_{j,m}]\\
+= \frac{1}{m} \begin{pmatrix}
+  a^{(1)}_{j,1}  & a^{(1)}_{j,2} & ... & a^{(1)}_{j,m}
+\end{pmatrix} \begin{pmatrix}
+  a^{(2)}_{1,1}-y^{(1)}\\
+  a^{(2)}_{1,2}-y^{(2)}\\
+  ...\\
+  a^{(2)}_{1,m}-y^{(m)}\\
+\end{pmatrix}\\\]
+
+\[\frac{\partial{J}}{\partial{W^{(2)}}} = {\begin{pmatrix}
+  \frac{\partial{J}}{\partial{W^{(2)}_{1,1}}} \\
+  \frac{\partial{J}}{\partial{W^{(2)}_{1,2}}} \\
+  ...\\
+  \frac{\partial{J}}{\partial{W^{(2)}_{1,j}}} \\
+  ...\\
+  \frac{\partial{J}}{\partial{W^{(2)}_{1,n2}}} \\
+\end{pmatrix}}_{n2×1}\]
+
+\[\frac{\partial{J}}{\partial{W^{(2)}}} = \frac{1}{m}{\begin{pmatrix}
+  a^{(1)}_{1,1}  & a^{(1)}_{1,2} & ... & a^{(1)}_{1,m} \\
+  a^{(1)}_{2,1}  & a^{(1)}_{2,2} & ... & a^{(1)}_{2,m} \\
+  ...\\
+  a^{(1)}_{j,1}  & a^{(1)}_{j,2} & ... & a^{(1)}_{j,m} \\
+  ...\\
+  a^{(1)}_{n2,1}  & a^{(1)}_{n2,2} & ... & a^{(1)}_{n2,m} \\
+\end{pmatrix}}_{n2×m}{\begin{pmatrix}
+  a^{(2)}_{1,1}-y^{(1)}\\
+  a^{(2)}_{1,2}-y^{(2)}\\
+  ...\\
+  a^{(2)}_{1,m}-y^{(m)}\\
+\end{pmatrix}}_{m×1}\]
+
+\hypertarget{header-n67}{%
+\subsubsection{\texorpdfstring{\(\frac{\partial J}{\partial W^{(2)}}\)}{\textbackslash frac\{\textbackslash partial J\}\{\textbackslash partial W\^{}\{(2)\}\}}}\label{header-n67}}
+
+\[\frac{\partial{J}}{\partial{W^{(2)}}} = \frac{1}{m}A^{(1)}(A^{(2)}-Y)^{T}\]
+
+\[\frac{\partial{j^{(i)}}}{\partial{b^{(2)}_{1}}} = \frac{\partial{j^{(i)}}}{\partial{a^{(2)}_{1,i}}} \frac{\partial{a^{(2)}_{1,i}}}{\partial{z^{(2)}_{1,i}}}\frac{\partial{z^{(2)}_{1,i}}}{\partial{b^{(2)}_{{1}}}} = (a^{(2)}_{1,i}-y^{(i)})\]
+
+\hypertarget{header-n70}{%
+\subsubsection{\texorpdfstring{\(\frac{\partial J}{\partial b^{(2)}}\)}{\textbackslash frac\{\textbackslash partial J\}\{\textbackslash partial b\^{}\{(2)\}\}}}\label{header-n70}}
+
+\[\frac{\partial J}{\partial b^{(2)}}=\frac{1}{m}\sum_{i=1}^{m}\frac{\partial{j^{(i)}}}{\partial{b^{(2)}_{1}}}=\frac{1}{m}\sum_{i=1}^{m}(a^{(2)}_{1,i}-y^{(i)})=\frac{1}{m}\sum_{i=1}^{m}dZ^{(2)}=\frac{1}{m}\sum_{i=1}^{m}(A^{(2)}-Y)=\frac{1}{m}np.sum(A^{(2)}-Y)\]
+
+\hypertarget{header-n72}{%
+\subsubsection{从隐藏层像输入层传播}\label{header-n72}}
+
+\[\frac{\partial{z^{(2)}_{1,i}}}{\partial{a^{(1)}_{j,i}}} = W^{(2)}_{1,j}\]
+
+\[\frac{\partial{a^{(1)}_{j,i}}}{\partial{z^{(1)}_{j,i}}} = {a^{(1)}_{j,i}}(1-{a^{(1)}_{j,i}})\]
+
+\[\frac{\partial{z^{(1)}_{j,i}}}{\partial{W^{(1)}_{j,k}}} = x^{(i)}_{k}\]
+
+\[\frac{\partial{z^{(1)}_{j,i}}}{\partial{b^{(1)}_{j}}} = 1\]
+
+\[\frac{\partial{j^{(i)}}}{\partial{W^{(1)}_{j,k}}}=\frac{\partial{j^{(i)}}}{\partial{a^{(2)}_{1,i}}} \frac{\partial{a^{(2)}_{1,i}}}{\partial{z^{(2)}_{1,i}}} \frac{\partial{z^{(2)}_{1,i}}}{\partial{a^{(1)}_{j,i}}} \frac{\partial{a^{(1)}_{j,i}}}{\partial{z^{(1)}_{j,i}}} \frac{\partial{z^{(1)}_{j,i}}}{\partial{W^{(1)}_{j,k}}} = \frac{a^{(2)}_{1,i}-y^{(i)}}{a^{(2)}_{1,i}(1-a^{(2)}_{1,i})} * {a^{(2)}_{1,i}(1-a^{(2)}_{1,i})} * W^{(2)}_{1,j} * {a^{(1)}_{j,i}}(1-{a^{(1)}_{j,i}}) * x^{(i)}_{k}\]
+
+\[\frac{\partial{j^{(i)}}}{\partial{b^{(1)}_{j}}}=\frac{\partial{j^{(i)}}}{\partial{a^{(2)}_{1,i}}} \frac{\partial{a^{(2)}_{1,i}}}{\partial{z^{(2)}_{1,i}}} \frac{\partial{z^{(2)}_{1,i}}}{\partial{a^{(1)}_{j,i}}} \frac{\partial{a^{(1)}_{j,i}}}{\partial{z^{(1)}_{j,i}}} \frac{\partial{z^{(1)}_{j,i}}}{\partial{b^{(1)}_{j}}} = \frac{a^{(2)}_{1,i}-y^{(i)}}{a^{(2)}_{1,i}(1-a^{(2)}_{1,i})} * {a^{(2)}_{1,i}(1-a^{(2)}_{1,i})} * W^{(2)}_{1,j} * {a^{(1)}_{j,i}}(1-{a^{(1)}_{j,i}})\]
+
+\[\frac{\partial{j^{(i)}}}{\partial{W^{(1)}_{j,k}}}=\frac{\partial{j^{(i)}}}{\partial{a^{(2)}_{1,i}}} \frac{\partial{a^{(2)}_{1,i}}}{\partial{z^{(2)}_{1,i}}} * [\frac{\partial{z^{(2)}_{1,i}}}{\partial{W^{(1)}_{j,k}}}]\]
+
+\[\frac{\partial{z^{(2)}_{1,i}}}{\partial{W^{(1)}_{j,k}}} = \sum_{j=1}^{n2}\frac{\partial{z^{(2)}_{1,i}}}{\partial{a^{(1)}_{j,i}}} \frac{\partial{a^{(1)}_{j,i}}}{\partial{z^{(1)}_{j,i}}} \frac{\partial{z^{(1)}_{j,i}}}{\partial{W^{(1)}_{j,k}}} = \sum_{j=1}^{n2}W^{(2)}_{1,j} * {a^{(1)}_{j,i}}(1-{a^{(1)}_{j,i}}) * x^{(i)}_{k}\]
+
+\[\frac{\partial{z^{(2)}_{1,i}}}{\partial{a^{(1)}_{j,i}}} \frac{\partial{a^{(1)}_{j,i}}}{\partial{z^{(1)}_{j,i}}} \frac{\partial{z^{(1)}_{j,i}}}{\partial{W^{(1)}_{j,k}}} = \frac{a^{(2)}_{1,i}-y^{(i)}}{a^{(2)}_{1,i}(1-a^{(2)}_{1,i})} * {a^{(2)}_{1,i}(1-a^{(2)}_{1,i})} * W^{(2)}_{1,j} * {a^{(1)}_{j,i}}(1-{a^{(1)}_{j,i}}) * x^{(i)}_{k}\]
+
+\[\frac{\partial{j^{(i)}}}{\partial{W^{(1)}_{j,k}}} = (a^{(2)}_{1,i}-y^{(i)}) * W^{(2)}_{1,j} * {a^{(1)}_{j,i}}(1-{a^{(1)}_{j,i}}) * x^{(i)}_{k}\]
+
+\[\frac{\partial{j^{(1)}}}{\partial{W^{(1)}_{j,k}}} = (a^{(2)}_{1,1}-y^{(1)}) * W^{(2)}_{1,j} * {a^{(1)}_{j,1}}(1-{a^{(1)}_{j,1}}) * x^{(1)}_{k}\]
+
+\[\frac{\partial{j^{(1)}}}{\partial{W^{(1)}_{1,1}}} = (a^{(2)}_{1,1}-y^{(1)}) * W^{(2)}_{1,1} * {a^{(1)}_{1,1}}(1-{a^{(1)}_{1,1}}) * x^{(1)}_{1}\]
+
+\[\frac{\partial{j^{(1)}}}{\partial{W^{(1)}_{1,2}}} = (a^{(2)}_{1,1}-y^{(1)}) * W^{(2)}_{1,1} * {a^{(1)}_{1,1}}(1-{a^{(1)}_{1,1}}) * x^{(1)}_{2}\]
+
+\[\frac{\partial{j^{(1)}}}{\partial{W^{(1)}_{j,k}}} = (a^{(2)}_{1,1}-y^{(1)}) * W^{(2)}_{1,1} * {a^{(1)}_{1,1}}(1-{a^{(1)}_{1,1}}) * x^{(1)}_{3}\]
+
+\[\frac{\partial{j^{(1)}}}{\partial{W^{(1)}_{j,k}}} = (a^{(2)}_{1,1}-y^{(1)}) * W^{(2)}_{1,1} * {a^{(1)}_{1,1}}(1-{a^{(1)}_{1,1}}) * x^{(1)}_{4}\]
+
+\hypertarget{header-n88}{%
+\subsubsection{\texorpdfstring{\(\frac{\partial J}{\partial W^{(1)}_{j,k}}\)}{\textbackslash frac\{\textbackslash partial J\}\{\textbackslash partial W\^{}\{(1)\}\_\{j,k\}\}}}\label{header-n88}}
+
+\[\frac{\partial J}{\partial W^{(1)}_{j,k}} = \frac{1}{m}\sum_{i=1}^{m}\frac{\partial{j^{(i)}}}{\partial{W^{(1)}_{j,k}}} = \frac{1}{m}\sum_{i=1}^{m}[(a^{(2)}_{1,i}-y^{(i)}) * W^{(2)}_{1,j} * {a^{(1)}_{j,i}}(1-{a^{(1)}_{j,i}}) * x^{(i)}_{k}]\]
+
+\[\frac{\partial J}{\partial b^{(1)}_{j}} = \frac{1}{m}\sum_{i=1}^{m}\frac{\partial{j^{(i)}}}{\partial{W^{(1)}_{j,k}}} = \frac{1}{m}\sum_{i=1}^{m}[(a^{(2)}_{1,i}-y^{(i)}) * W^{(2)}_{1,j} * {a^{(1)}_{j,i}}(1-{a^{(1)}_{j,i}})]\]
+
+\[\frac{\partial J}{\partial W^{(1)}} = {
+    \begin{pmatrix}
+      \frac{\partial J}{\partial b^{(1)}_{1}} \\
+      \frac{\partial J}{\partial b^{(1)}_{2}} \\
+      ...\\
+      \frac{\partial J}{\partial b^{(1)}_{j}} \\
+      ...\\
+      \frac{\partial J}{\partial b^{(1)}_{n2}}
+    \end{pmatrix}
+  }_{n2×1}\]
+
+\[\frac{\partial J}{\partial W^{(1)}} = {
+    \begin{pmatrix}
+      \frac{\partial J}{\partial W^{(1)}_{1,1}} & \frac{\partial J}{\partial W^{(1)}_{2,1}} & ...& \frac{\partial J}{\partial W^{(1)}_{j,1}} &... & \frac{\partial J}{\partial W^{(1)}_{n2,1}}\\
+      \frac{\partial J}{\partial W^{(1)}_{1,2}} & \frac{\partial J}{\partial W^{(1)}_{2,2}} & ...& \frac{\partial J}{\partial W^{(1)}_{j,2}} &... & \frac{\partial J}{\partial W^{(1)}_{n2,2}}\\
+      ...&...&...& ...&...&...&\\
+      \frac{\partial J}{\partial W^{(1)}_{1,k}} & \frac{\partial J}{\partial W^{(1)}_{2,k}} & ...& \frac{\partial J}{\partial W^{(1)}_{j,k}} &... & \frac{\partial J}{\partial W^{(1)}_{n2,k}}\\
+      ...&...&...& ...&...&...&\\
+      \frac{\partial J}{\partial W^{(1)}_{1,n1}} & \frac{\partial J}{\partial W^{(1)}_{2,n1}} & ...& \frac{\partial J}{\partial W^{(1)}_{j,n1}} &... & \frac{\partial J}{\partial W^{(1)}_{n2,n1}}
+    \end{pmatrix}
+  }_{n1×n2}\]
+
+\[{\begin{pmatrix}
+      x^{(1)}_{1} & x^{(2)}_{1} &...& x^{(i)}_{1} &...& x^{(m)}_{1} & \\
+      x^{(1)}_{2} & x^{(2)}_{2} &...& x^{(i)}_{2} &...& x^{(m)}_{2} & \\
+      ...&...&...&...&...&...\\
+      x^{(1)}_{j} & x^{(2)}_{j} &...& x^{(i)}_{j} &...& x^{(m)}_{j} & \\
+      ...&...&...&...&...&...\\
+      x^{(1)}_{n1} & x^{(2)}_{n1} &...& x^{(i)}_{n1} &...& x^{(m)}_{n1} & \\
+    \end{pmatrix}}_{n1×m}
+
+    {\begin{pmatrix}
+      a^{(2)}_{1,1}-y^{(1)} \\
+      a^{(2)}_{1,2}-y^{(2)} \\
+      ...\\
+      a^{(2)}_{1,m}-y^{(m)} \\
+    \end{pmatrix}}_{m×1}  
+    \odot
+    {\begin{pmatrix}
+      a^{(1)}_{1,1}(1-a^{(1)}_{1,1}) & a^{(1)}_{2,1}(1-a^{(1)}_{2,1}) & ... & a^{(1)}_{n2,1}(1-a^{(1)}_{n2,1}) \\
+      a^{(1)}_{1,2}(1-a^{(1)}_{1,2}) & a^{(1)}_{2,2}(1-a^{(1)}_{2,2}) & ... & a^{(1)}_{n2,2}(1-a^{(1)}_{n2,2}) \\
+      ...\\
+      a^{(1)}_{1,m}(1-a^{(1)}_{1,m}) & a^{(1)}_{2,m}(1-a^{(1)}_{2,m}) & ... & a^{(1)}_{n2,m}(1-a^{(1)}_{n2,m}) \\
+    \end{pmatrix}}_{m×n2}
+    \odot
+    {\begin{pmatrix}
+      W^{(2)}_{1,1}  & W^{(2)}_{1,2} & ... & W^{(2)}_{1,n2}
+    \end{pmatrix}}_{1×n2}\]
+
+\hypertarget{header-n94}{%
+\subsubsection{\texorpdfstring{\((A^{(2)}-Y)^{T}(W^{(2)})^{T}\)}{(A\^{}\{(2)\}-Y)\^{}\{T\}(W\^{}\{(2)\})\^{}\{T\}}}\label{header-n94}}
+
+\[{\begin{pmatrix}
+    a^{(2)}_{1,1}-y^{(1)} \\
+    a^{(2)}_{1,2}-y^{(2)} \\
+    ...\\
+    a^{(2)}_{1,m}-y^{(m)} \\
+  \end{pmatrix}}_{m×1}
+  {\begin{pmatrix}
+      W^{(2)}_{1,1}  & W^{(2)}_{1,2} & ... & W^{(2)}_{1,n2}
+    \end{pmatrix}}_{1×n2}=
+
+    {
+      \begin{pmatrix}
+        (a^{(2)}_{1,1}-y^{(1)})W^{(2)}_{1,1} & (a^{(2)}_{1,1}-y^{(1)})W^{(2)}_{1,2} & ... (a^{(2)}_{1,1}-y^{(1)})W^{(2)}_{1,n2} \\
+        (a^{(2)}_{1,2}-y^{(2)})W^{(2)}_{1,1} & (a^{(2)}_{1,2}-y^{(2)})W^{(2)}_{1,2} & ... (a^{(2)}_{1,2}-y^{(2)})W^{(2)}_{1,n2} \\
+        ...&...&...\\
+        (a^{(2)}_{1,m}-y^{(m)})W^{(2)}_{1,1} & (a^{(2)}_{m}-y^{(m)})W^{(2)}_{1,2} & ... (a^{(2)}_{1,m}-y^{(m)})W^{(2)}_{1,n2} \\
+      \end{pmatrix}
+    }_{m×n2}\]
+
+\hypertarget{header-n96}{%
+\subsubsection{\texorpdfstring{\([(A^{(2)}-Y)^{T}(W^{(2)})^{T}]\odot(\sigma^{'}Z^{(2)})^{T}\)}{{[}(A\^{}\{(2)\}-Y)\^{}\{T\}(W\^{}\{(2)\})\^{}\{T\}{]}\textbackslash odot(\textbackslash sigma\^{}\{'\}Z\^{}\{(2)\})\^{}\{T\}}}\label{header-n96}}
+
+\[{
+      \begin{pmatrix}
+        (a^{(2)}_{1,1}-y^{(1)})W^{(2)}_{1,1} & (a^{(2)}_{1,1}-y^{(1)})W^{(2)}_{1,2} & ... & (a^{(2)}_{1,1}-y^{(1)})W^{(2)}_{1,n2} \\
+        (a^{(2)}_{1,2}-y^{(2)})W^{(2)}_{1,1} & (a^{(2)}_{1,2}-y^{(2)})W^{(2)}_{1,2} & ... & (a^{(2)}_{1,2}-y^{(2)})W^{(2)}_{1,n2} \\
+        ...&...&...\\
+        (a^{(2)}_{1,m}-y^{(m)})W^{(2)}_{1,1} & (a^{(2)}_{m}-y^{(m)})W^{(2)}_{1,2} & ... & (a^{(2)}_{1,m}-y^{(m)})W^{(2)}_{1,n2} \\
+      \end{pmatrix}
+    }_{m×n2}
+    \odot
+    {\begin{pmatrix}
+      a^{(1)}_{1,1}(1-a^{(1)}_{1,1}) & a^{(1)}_{2,1}(1-a^{(1)}_{2,1}) & ... & a^{(1)}_{n2,1}(1-a^{(1)}_{n2,1}) \\
+
+      a^{(1)}_{1,2}(1-a^{(1)}_{1,2}) & a^{(1)}_{2,2}(1-a^{(1)}_{2,2}) & ... & a^{(1)}_{n2,2}(1-a^{(1)}_{n2,2}) \\
+      ...\\
+      a^{(1)}_{1,m}(1-a^{(1)}_{1,m}) & a^{(1)}_{2,m}(1-a^{(1)}_{2,m}) & ... & a^{(1)}_{n2,m}(1-a^{(1)}_{n2,m}) \\
+    \end{pmatrix}}_{m×n2}\]
+
+\hypertarget{header-n98}{%
+\subsubsection{\texorpdfstring{\(\frac{\partial J}{\partial W^{(1)}} = X\{[(A^{(2)}-Y)^{T}(W^{(2)})^{T}]\odot(\sigma^{'}Z^{(2)})^{T}\}\)}{\textbackslash frac\{\textbackslash partial J\}\{\textbackslash partial W\^{}\{(1)\}\} = X\textbackslash\{{[}(A\^{}\{(2)\}-Y)\^{}\{T\}(W\^{}\{(2)\})\^{}\{T\}{]}\textbackslash odot(\textbackslash sigma\^{}\{'\}Z\^{}\{(2)\})\^{}\{T\}\textbackslash\}}}\label{header-n98}}
+
+\hypertarget{header-n99}{%
+\subsubsection{\texorpdfstring{\(\frac{\partial J}{\partial b^{(1)}} = [(A^{(2)}-Y)^{T}(W^{(2)})^{T}]\odot(\sigma^{'}Z^{(2)})^{T}\)}{\textbackslash frac\{\textbackslash partial J\}\{\textbackslash partial b\^{}\{(1)\}\} = {[}(A\^{}\{(2)\}-Y)\^{}\{T\}(W\^{}\{(2)\})\^{}\{T\}{]}\textbackslash odot(\textbackslash sigma\^{}\{'\}Z\^{}\{(2)\})\^{}\{T\}}}\label{header-n99}}
+
+\[{\begin{pmatrix}
+      a^{(1)}_{1,1}(1-a^{(1)}_{1,1}) & a^{(1)}_{1,2}(1-a^{(1)}_{1,2}) & ... & a^{(1)}_{1,m}(1-a^{(1)}_{1,m})\\
+      a^{(1)}_{2,1}(1-a^{(1)}_{2,1}) & a^{(1)}_{2,2}(1-a^{(1)}_{2,2}) & ... & a^{(1)}_{2,m}(1-a^{(1)}_{2,m})\\
+      a^{(1)}_{n2,1}(1-a^{(1)}_{n2,1}) & a^{(1)}_{n2,2}(1-a^{(1)}_{n2,2}) & ... & a^{(1)}_{n2,m}(1-a^{(1)}_{n2,m}) \\
+    \end{pmatrix}}_{n2×m}\]
+
+\hypertarget{header-n101}{%
+\subsubsection{\texorpdfstring{\(A^{(2)}-Y\)}{A\^{}\{(2)\}-Y}}\label{header-n101}}
+
+\[{\begin{pmatrix}
+      a^{(2)}_{1,1}-y^{(1)} &
+      a^{(2)}_{1,2}-y^{(2)} & ... &
+      a^{(2)}_{1,m}-y^{(m)}
+    \end{pmatrix}}_{1×m}\]
+
+\[\frac{\partial{j^{(2)}}}{\partial{W^{(1)}_{j,k}}} = (a^{(2)}_{1,2}-y^{(2)}) * W^{(2)}_{1,j} * {a^{(1)}_{j,2}}(1-{a^{(1)}_{j,2}}) * x^{(2)}_{k}\]
+
+Forward Propagation:
+
+\begin{itemize}
+\item
+  You get X
+\item
+  You compute
+  \(A = \sigma(w^T X + b) = (a^{(0)}, a^{(1)}, ..., a^{(m-1)}, a^{(m)})\)
+\item
+  You calculate the cost function:
+  \(J = -\frac{1}{m}\sum_{i=1}^{m}y^{(i)}\log(a^{(i)})+(1-y^{(i)})\log(1-a^{(i)})\)
+\end{itemize}
+
+\begin{matrix}
+        1 & x & x^2 \\
+        1 & y & y^2 \\
+        1 & z & z^2 \\
+        \end{matrix}
+
+\begin{bmatrix}
+a_{00}&a_{01}\\\\
+a_{10}&a_{11}
+\end{bmatrix}
+
+\begin{bmatrix}
+      x^{(1)}_{1}\\
+      x^{(1)}_{2} \\
+      x^{(1)}_{j}\\
+      x^{(1)}_{n1}
+\end{bmatrix}
+
+\end{document}

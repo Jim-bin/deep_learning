@@ -1,0 +1,799 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>神经网络推导.md</title>
+<meta http-equiv="Content-type" content="text/html;charset=UTF-8">
+
+<style>
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+body {
+	font-family: "Segoe WPC", "Segoe UI", "SFUIText-Light", "HelveticaNeue-Light", sans-serif, "Droid Sans Fallback";
+	font-size: 14px;
+	padding: 0 12px;
+	line-height: 22px;
+	word-wrap: break-word;
+}
+
+#code-csp-warning {
+	position: fixed;
+	top: 0;
+	right: 0;
+	color: white;
+	margin: 16px;
+	text-align: center;
+	font-size: 12px;
+	font-family: sans-serif;
+	background-color:#444444;
+	cursor: pointer;
+	padding: 6px;
+	box-shadow: 1px 1px 1px rgba(0,0,0,.25);
+}
+
+#code-csp-warning:hover {
+	text-decoration: none;
+	background-color:#007acc;
+	box-shadow: 2px 2px 2px rgba(0,0,0,.25);
+}
+
+
+body.scrollBeyondLastLine {
+	margin-bottom: calc(100vh - 22px);
+}
+
+body.showEditorSelection .code-line {
+	position: relative;
+}
+
+body.showEditorSelection .code-active-line:before,
+body.showEditorSelection .code-line:hover:before {
+	content: "";
+	display: block;
+	position: absolute;
+	top: 0;
+	left: -12px;
+	height: 100%;
+}
+
+body.showEditorSelection li.code-active-line:before,
+body.showEditorSelection li.code-line:hover:before {
+	left: -30px;
+}
+
+.vscode-light.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.15);
+}
+
+.vscode-light.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.40);
+}
+
+.vscode-dark.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.4);
+}
+
+.vscode-dark.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.60);
+}
+
+.vscode-high-contrast.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 160, 0, 0.7);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 160, 0, 1);
+}
+
+img {
+	max-width: 100%;
+	max-height: 100%;
+}
+
+a {
+	color: #4080D0;
+	text-decoration: none;
+}
+
+a:focus,
+input:focus,
+select:focus,
+textarea:focus {
+	outline: 1px solid -webkit-focus-ring-color;
+	outline-offset: -1px;
+}
+
+hr {
+	border: 0;
+	height: 2px;
+	border-bottom: 2px solid;
+}
+
+h1 {
+	padding-bottom: 0.3em;
+	line-height: 1.2;
+	border-bottom-width: 1px;
+	border-bottom-style: solid;
+}
+
+h1, h2, h3 {
+	font-weight: normal;
+}
+
+h1 code,
+h2 code,
+h3 code,
+h4 code,
+h5 code,
+h6 code {
+	font-size: inherit;
+	line-height: auto;
+}
+
+a:hover {
+	color: #4080D0;
+	text-decoration: underline;
+}
+
+table {
+	border-collapse: collapse;
+}
+
+table > thead > tr > th {
+	text-align: left;
+	border-bottom: 1px solid;
+}
+
+table > thead > tr > th,
+table > thead > tr > td,
+table > tbody > tr > th,
+table > tbody > tr > td {
+	padding: 5px 10px;
+}
+
+table > tbody > tr + tr > td {
+	border-top: 1px solid;
+}
+
+blockquote {
+	margin: 0 7px 0 5px;
+	padding: 0 16px 0 10px;
+	border-left: 5px solid;
+}
+
+code {
+	font-family: Menlo, Monaco, Consolas, "Droid Sans Mono", "Courier New", monospace, "Droid Sans Fallback";
+	font-size: 14px;
+	line-height: 19px;
+}
+
+body.wordWrap pre {
+	white-space: pre-wrap;
+}
+
+.mac code {
+	font-size: 12px;
+	line-height: 18px;
+}
+
+pre:not(.hljs),
+pre.hljs code > div {
+	padding: 16px;
+	border-radius: 3px;
+	overflow: auto;
+}
+
+/** Theming */
+
+.vscode-light,
+.vscode-light pre code {
+	color: rgb(30, 30, 30);
+}
+
+.vscode-dark,
+.vscode-dark pre code {
+	color: #DDD;
+}
+
+.vscode-high-contrast,
+.vscode-high-contrast pre code {
+	color: white;
+}
+
+.vscode-light code {
+	color: #A31515;
+}
+
+.vscode-dark code {
+	color: #D7BA7D;
+}
+
+.vscode-light pre:not(.hljs),
+.vscode-light code > div {
+	background-color: rgba(220, 220, 220, 0.4);
+}
+
+.vscode-dark pre:not(.hljs),
+.vscode-dark code > div {
+	background-color: rgba(10, 10, 10, 0.4);
+}
+
+.vscode-high-contrast pre:not(.hljs),
+.vscode-high-contrast code > div {
+	background-color: rgb(0, 0, 0);
+}
+
+.vscode-high-contrast h1 {
+	border-color: rgb(0, 0, 0);
+}
+
+.vscode-light table > thead > tr > th {
+	border-color: rgba(0, 0, 0, 0.69);
+}
+
+.vscode-dark table > thead > tr > th {
+	border-color: rgba(255, 255, 255, 0.69);
+}
+
+.vscode-light h1,
+.vscode-light hr,
+.vscode-light table > tbody > tr + tr > td {
+	border-color: rgba(0, 0, 0, 0.18);
+}
+
+.vscode-dark h1,
+.vscode-dark hr,
+.vscode-dark table > tbody > tr + tr > td {
+	border-color: rgba(255, 255, 255, 0.18);
+}
+
+.vscode-light blockquote,
+.vscode-dark blockquote {
+	background: rgba(127, 127, 127, 0.1);
+	border-color: rgba(0, 122, 204, 0.5);
+}
+
+.vscode-high-contrast blockquote {
+	background: transparent;
+	border-color: #fff;
+}
+</style>
+
+<style>
+/* Tomorrow Theme */
+/* http://jmblog.github.com/color-themes-for-google-code-highlightjs */
+/* Original theme - https://github.com/chriskempson/tomorrow-theme */
+
+/* Tomorrow Comment */
+.hljs-comment,
+.hljs-quote {
+	color: #8e908c;
+}
+
+/* Tomorrow Red */
+.hljs-variable,
+.hljs-template-variable,
+.hljs-tag,
+.hljs-name,
+.hljs-selector-id,
+.hljs-selector-class,
+.hljs-regexp,
+.hljs-deletion {
+	color: #c82829;
+}
+
+/* Tomorrow Orange */
+.hljs-number,
+.hljs-built_in,
+.hljs-builtin-name,
+.hljs-literal,
+.hljs-type,
+.hljs-params,
+.hljs-meta,
+.hljs-link {
+	color: #f5871f;
+}
+
+/* Tomorrow Yellow */
+.hljs-attribute {
+	color: #eab700;
+}
+
+/* Tomorrow Green */
+.hljs-string,
+.hljs-symbol,
+.hljs-bullet,
+.hljs-addition {
+	color: #718c00;
+}
+
+/* Tomorrow Blue */
+.hljs-title,
+.hljs-section {
+	color: #4271ae;
+}
+
+/* Tomorrow Purple */
+.hljs-keyword,
+.hljs-selector-tag {
+	color: #8959a8;
+}
+
+.hljs {
+	display: block;
+	overflow-x: auto;
+	color: #4d4d4c;
+	padding: 0.5em;
+}
+
+.hljs-emphasis {
+	font-style: italic;
+}
+
+.hljs-strong {
+	font-weight: bold;
+}
+</style>
+
+<style>
+/*
+ * Markdown PDF CSS
+ */
+
+ body {
+	font-family:  "Meiryo", "Segoe WPC", "Segoe UI", "SFUIText-Light", "HelveticaNeue-Light", sans-serif, "Droid Sans Fallback";
+}
+
+pre {
+	background-color: #f8f8f8;
+	border: 1px solid #cccccc;
+	border-radius: 3px;
+	overflow-x: auto;
+	white-space: pre-wrap;
+	overflow-wrap: break-word;
+}
+
+pre:not(.hljs) {
+	padding: 23px;
+	line-height: 19px;
+}
+
+blockquote {
+	background: rgba(127, 127, 127, 0.1);
+	border-color: rgba(0, 122, 204, 0.5);
+}
+
+.emoji {
+	height: 1.4em;
+}
+
+/* for inline code */
+:not(pre):not(.hljs) > code {
+	color: #C9AE75; /* Change the old color so it seems less like an error */
+	font-size: inherit;
+}
+
+/* Page Break : use <div class="page"/> to insert page break
+-------------------------------------------------------- */
+.page {
+	page-break-after: always;
+}
+
+</style>
+
+</head>
+<body>
+<h1 id="%E4%B8%89%E5%B1%82%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C%EF%BC%9A%E4%B8%80%E4%B8%AA%E8%BE%93%E5%85%A5%E5%B1%82%EF%BC%8C%E4%B8%80%E4%B8%AA%E9%9A%90%E8%97%8F%E5%B1%82%EF%BC%8C%E4%B8%80%E4%B8%AA%E8%BE%93%E5%87%BA%E5%B1%82">三层神经网络：一个输入层，一个隐藏层，一个输出层</h1>
+<h2 id="1-%E4%BB%8E%E8%BE%93%E5%85%A5%E5%B1%82%E5%88%B0%E9%9A%90%E8%97%8F%E5%B1%82">1. 从输入层到隐藏层</h2>
+<h3 id="x1">$x^{(1)}$</h3>
+<p>$$x^{(1)} = {
+\begin{pmatrix}
+x^{(1)}<em>{1}\
+x^{(1)}</em>{2} \
+...\
+x^{(1)}<em>{j}\
+...\
+x^{(1)}</em>{n1}
+\end{pmatrix}
+}_{n1×1}$$</p>
+<h3 id="x">$X$</h3>
+<p>$$X={\begin{pmatrix}
+x^{(1)}<em>{1} &amp; x^{(2)}</em>{1} &amp;...&amp; x^{(i)}<em>{1} &amp;...&amp; x^{(m)}</em>{1} &amp; \
+x^{(1)}<em>{2} &amp; x^{(2)}</em>{2} &amp;...&amp; x^{(i)}<em>{2} &amp;...&amp; x^{(m)}</em>{2} &amp; \
+...&amp;...&amp;...&amp;...&amp;...&amp;...\
+x^{(1)}<em>{j} &amp; x^{(2)}</em>{j} &amp;...&amp; x^{(i)}<em>{j} &amp;...&amp; x^{(m)}</em>{j} &amp; \
+...&amp;...&amp;...&amp;...&amp;...&amp;...\
+x^{(1)}<em>{n1} &amp; x^{(2)}</em>{n1} &amp;...&amp; x^{(i)}<em>{n1} &amp;...&amp; x^{(m)}</em>{n1} &amp; \
+\end{pmatrix}}_{n1×m}$$</p>
+<h3 id="y1">$y^{(1)}$</h3>
+<p>$$y^{(1)}={y^{(1)}}$$</p>
+<h3 id="y">$Y$</h3>
+<p>$$Y={
+\begin{pmatrix}
+y^{(1)} &amp; y^{(2)} &amp;...&amp; y^{(i)} &amp;...&amp; y^{(m)} \
+\end{pmatrix}
+}_{1×m}$$</p>
+<h3 id="w11">$W^{(1)}_{1}$</h3>
+<p>$$
+W^{(1)}<em>{1} = {
+\begin{pmatrix}
+W^{(1)}</em>{1,1} \
+W^{(1)}<em>{1,2} \
+...\
+W^{(1)}</em>{1,n1} \
+\end{pmatrix}
+}_{n1×1}
+$$</p>
+<h3 id="w1">$W^{(1)}$</h3>
+<p>$$
+W^{(1)} = {
+\begin{pmatrix}
+W^{(1)}<em>{1} &amp;
+W^{(1)}</em>{2} &amp; ... &amp;
+W^{(1)}<em>{n2}
+\end{pmatrix}}</em>{n1×n2}</p>
+<pre><code>W^{(1)} = {
+\begin{pmatrix}
+  W^{(1)}_{1,1} &amp; W^{(1)}_{2,1} &amp; ... &amp; W^{(1)}_{j,1} &amp;...&amp; W^{(1)}_{n2,1} &amp;  \\
+  W^{(1)}_{1,2} &amp; W^{(1)}_{2,2} &amp; ... &amp; W^{(1)}_{j,2} &amp;...&amp; W^{(1)}_{n2,2} &amp;  \\
+  ...\\
+  W^{(1)}_{1,i} &amp; W^{(1)}_{2,i} &amp; ... &amp; W^{(1)}_{j,i} &amp;...&amp; W^{(1)}_{n2,i} &amp;  \\
+  ...\\
+  W^{(1)}_{1,n1} &amp; W^{(1)}_{2,n1} &amp; ... &amp; W^{(1)}_{j,n1} &amp;...&amp; W^{(1)}_{n2,n1} &amp;  \\
+\end{pmatrix}
+</code></pre>
+<p>}_{n1×n2}
+$$</p>
+<h3 id="b11">$b^{(1)}_{1}$</h3>
+<h3 id="b1">$b^{(1)}$</h3>
+<p>$$
+b^{(1)} = {\begin{pmatrix}
+b^{(1)}<em>{1} \
+b^{(1)}</em>{2} \
+... \
+b^{(1)}<em>{n2}
+\end{pmatrix}}</em>{n2×1}
+$$</p>
+<h3 id="z11i">$z^{(1)}_{1,i}$</h3>
+<p>$$z^{(1)}<em>{1,i} = (W^{(1)}){^T}x^{(i)}+b^{(1)}=W^{(1)}</em>{1,1}x^{(i)}<em>{1} + W^{(1)}</em>{1,2}x^{(i)}<em>{2} + ... + W^{(1)}</em>{1,n1}x^{(i)}<em>{n1}+b^{(1)}</em>{1}$$</p>
+<p>$$z^{(1)}<em>{,i}
+={\begin{pmatrix}
+W^{(1)}</em>{1,1}x^{(1)}<em>{1} + W^{(1)}</em>{1,2}x^{(1)}<em>{2} + ... + W^{(1)}</em>{1,n1}x^{(1)}<em>{n1}+b^{(1)}</em>{1} \</p>
+<p>W^{(1)}<em>{2,1}x^{(1)}</em>{1} + W^{(1)}<em>{2,2}x^{(1)}</em>{2} + ... + W^{(1)}<em>{2,n1}x^{(1)}</em>{n1}+b^{(1)}<em>{2} \
+.......................................................\\
+W^{(1)}</em>{n2,1}x^{(1)}<em>{1} + W^{(1)}</em>{n2,2}x^{(1)}<em>{2} + ... + W^{(1)}</em>{n2,n1}x^{(1)}<em>{n1}+b^{(1)}</em>{n2} \
+\end{pmatrix}}_{n2×1}$$</p>
+<h3 id="%E6%89%80%E6%9C%89%E6%A0%B7%E6%9C%AC%E7%9A%84%E7%AC%AC%E4%B8%80%E5%B1%82z1">所有样本的第一层$Z^{(1)}$</h3>
+<p>$$
+Z^{(1)}={\begin{pmatrix}
+z^{(1)}<em>{,1} &amp; z^{(1)}</em>{,2} &amp; ... &amp; z^{(1)}<em>{,m} \
+\end{pmatrix}}</em>{n2×m}
+$$</p>
+<p>$$
+Z^{(1)}={\begin{pmatrix}
+z^{(1)}<em>{1,1} &amp; z^{(1)}</em>{1,2} &amp; ... &amp; z^{(1)}<em>{1,m} \
+z^{(1)}</em>{2,1} &amp; z^{(1)}<em>{2,2} &amp; ... &amp; z^{(1)}</em>{2,m} \
+...\
+z^{(1)}<em>{n2,1} &amp; z^{(1)}</em>{n2,2} &amp; ... &amp; z^{(1)}<em>{n2,m} \
+\end{pmatrix}}</em>{n2×m}$$</p>
+<h3 id="a11i">$a^{(1)}_{1,i}$</h3>
+<p>$$
+a^{(1)}<em>{1,i} = sigmoid(z^{(1)}</em>{1,i}) = sigmoid((W^{(1)})^{T}x^{(i)}+ b^{(1)}_{1})
+$$</p>
+<h3 id="%E6%89%80%E6%9C%89%E6%A0%B7%E6%9C%AC%E7%9A%84%E7%AC%AC%E4%B8%80%E5%B1%82a1">所有样本的第一层$A^{(1)}$</h3>
+<p>$$
+A^{(1)} = {\begin{pmatrix}
+a^{(1)}<em>{,1} &amp;  a^{(1)}</em>{,2} &amp; ... &amp; a^{(1)}<em>{,m} \
+\end{pmatrix}}</em>{n2×m}
+$$</p>
+<p>$$
+A^{(1)}={\begin{pmatrix}
+a^{(1)}<em>{1,1} &amp; a^{(1)}</em>{1,2} &amp; ... &amp; a^{(1)}<em>{1,m} \
+a^{(1)}</em>{2,1} &amp; a^{(1)}<em>{2,2} &amp; ... &amp; a^{(1)}</em>{2,m} \
+...\
+a^{(1)}<em>{n2,1} &amp; a^{(1)}</em>{n2,2} &amp; ... &amp; a^{(1)}<em>{n2,m} \
+\end{pmatrix}}</em>{n2×m}$$</p>
+<h2 id="2-%E4%BB%8E%E9%9A%90%E8%97%8F%E5%B1%82%E5%88%B0%E8%BE%93%E5%87%BA%E5%B1%82">2. 从隐藏层到输出层</h2>
+<h3 id="w21">$W^{(2)}_{1}$</h3>
+<p>$$
+W^{(2)}<em>{1} = {
+\begin{pmatrix}
+W^{(2)}</em>{1,1} \
+W^{(2)}<em>{1,2} \
+...\
+W^{(2)}</em>{1,n2} \
+\end{pmatrix}
+}_{n2×1}
+$$</p>
+<h3 id="w2">$W^{(2)}$</h3>
+<p>$$W^{(2)} = {
+\begin{pmatrix}
+W^{(2)}<em>{1}
+\end{pmatrix}}</em>{n2×1}\\</p>
+<pre><code>W^{(2)} = {
+\begin{pmatrix}
+ W^{(2)}_{1,1} \\ 
+ W^{(2)}_{1,2} \\
+ ...\\
+ W^{(2)}_{1,n2} \\
+\end{pmatrix}
+</code></pre>
+<p>}_{n2×1}$$</p>
+<h3 id="b21">$b^{(2)}_{1}$</h3>
+<h3 id="b2">$b^{(2)}$</h3>
+<p>$$
+b^{(1)} = {\begin{pmatrix}
+b^{(2)}<em>{1}
+\end{pmatrix}}</em>{1×1}
+$$</p>
+<h3 id="z21">$z^{(2)}_{1}$</h3>
+<p>$$z^{(2)}_{1} = (W^{(2)}){^T}a^{(1)}+b^{(2)}$$</p>
+<p>$$z^{(2)}<em>{1}
+={\begin{pmatrix}
+W^{(2)}</em>{1,1}a^{(1)}<em>{1} + W^{(2)}</em>{1,2}a^{(1)}<em>{2} + ... + W^{(1)}</em>{1,n2}a^{(1)}<em>{n2}+b^{(2)}</em>{1}
+\end{pmatrix}}_{1×1}$$</p>
+<h3 id="z2%EF%BC%9A%E6%89%80%E6%9C%89%E6%A0%B7%E6%9C%AC%E7%9A%84z2">$Z^{(2)}$：所有样本的$z^{(2)}$</h3>
+<p>$$
+Z^{(2)}={\begin{pmatrix}
+z^{(2)}<em>{1} &amp; z^{(2)}</em>{2} &amp; ... &amp; z^{(2)}<em>{m}
+\end{pmatrix}}</em>{1×m}
+$$</p>
+<h3 id="a21">$a^{(2)}_{1}$</h3>
+<p>$$
+a^{(2)}<em>{1} = sigmoid(z^{(2)}</em>{1}) = sigmoid((W^{(2)})^{T}a^{(1)})
+$$</p>
+<h3 id="a2%EF%BC%9A%E6%89%80%E6%9C%89%E6%A0%B7%E6%9C%AC%E7%9A%84a2">$A^{(2)}$：所有样本的$a^{(2)}$</h3>
+<p>$$
+A^{(2)} = {\begin{pmatrix}
+a^{(2)}<em>{1} &amp; a^{(2)}</em>{2} &amp; ... &amp; a^{(2)}<em>{m}
+\end{pmatrix}}</em>{1×m}
+$$</p>
+<h2 id="3-%E5%8F%8D%E5%90%91%E4%BC%A0%E6%92%AD">3. 反向传播</h2>
+<h3 id="%E6%AF%8F%E4%B8%AA%E6%A0%B7%E6%9C%AC%E7%9A%84%E8%AF%AF%E5%B7%AE%E5%87%BD%E6%95%B0j1">每个样本的误差函数$j^{(1)}$</h3>
+<p>$$
+j^{(i)} = -[y^{(i)}log(a^{(2)}<em>{1,i})+（1-y^{(i)})log(1-a^{(2)}</em>{1,i})]
+$$</p>
+<h3 id="%E6%89%80%E6%9C%89%E6%A0%B7%E6%9C%AC%E7%9A%84%E8%AF%AF%E5%B7%AE%E5%87%BD%E6%95%B0">所有样本的误差函数</h3>
+<p>$$
+J = -\frac{1}{m}\sum_{i=1}^{m}[y^{(i)}log(a^{(2)}<em>{1,i})+（1-y^{(i)})log(1-a^{(2)}</em>{1,i})]
+$$</p>
+<h3 id="%E5%8D%95%E4%B8%AA%E6%A0%B7%E6%9C%AC%E6%B1%82%E5%81%8F%E5%AF%BC">单个样本求偏导</h3>
+<p>$$
+j^{(i)} = -[y^{(i)}log(a^{(2)}<em>{1,i})+（1-y^{(i)})log(1-a^{(2)}</em>{1,i})]
+$$</p>
+<p>$$
+\frac{\partial{j^{(i)}}}{\partial{a^{(2)}<em>{1,i}}} = \frac{a^{(2)}</em>{1,i}-y^{(i)}}{a^{(2)}<em>{1,i}(1-a^{(2)}</em>{1,i})}
+$$</p>
+<p>$$\frac{\partial{a^{(2)}<em>{1,i}}}{\partial{z^{(2)}</em>{1,i}}} = {a^{(2)}<em>{1,i}(1-a^{(2)}</em>{1,i})}$$</p>
+<p>$$\frac{\partial{z^{(2)}<em>{1,i}}}{\partial{W^{(2)}</em>{1,1}}} = {a^{(1)}_{1,i}}$$</p>
+<p>$$\frac{\partial{z^{(2)}<em>{1,i}}}{\partial{W^{(2)}</em>{1,2}}} = {a^{(1)}_{2,i}}$$</p>
+<p>$$\frac{\partial{z^{(2)}<em>{1,i}}}{\partial{W^{(2)}</em>{1,j}}} = {a^{(1)}_{j,i}}$$</p>
+<p>$$...$$</p>
+<p>$$\frac{\partial{z^{(2)}<em>{1,i}}}{\partial{W^{(2)}}} = {\begin{pmatrix}
+{a^{(1)}</em>{1,i}} \
+{a^{(1)}<em>{2,i}} \
+...\
+{a^{(1)}</em>{j,i}} \
+...\
+{a^{(1)}<em>{n2,i}}
+\end{pmatrix}}</em>{n2×1}$$</p>
+<p>$$\frac{\partial{z^{(2)}<em>{1,i}}}{\partial{b^{(2)}</em>{1}}} = 1$$</p>
+<p>$$\frac{\partial{j^{(i)}}}{\partial{W^{(2)}}} = \frac{\partial{j^{(i)}}}{\partial{a^{(2)}<em>{1,i}}} \frac{\partial{a^{(2)}</em>{1,i}}}{\partial{z^{(2)}<em>{1,i}}}\frac{\partial{z^{(2)}</em>{1,i}}}{\partial{W^{(2)}}} = a^{(2)}<em>{1,i}-y^{(i)}{\begin{pmatrix}
+{a^{(1)}</em>{1,i}} \
+{a^{(1)}<em>{2,i}} \
+...\
+{a^{(1)}</em>{j,i}} \
+...\
+{a^{(1)}<em>{n2,i}}
+\end{pmatrix}}</em>{n2×1}$$</p>
+<p>$$\frac{\partial{j^{(i)}}}{\partial{W^{(2)}<em>{1,1}}} = \frac{\partial{j^{(i)}}}{\partial{a^{(2)}</em>{1,i}}} \frac{\partial{a^{(2)}<em>{1,i}}}{\partial{z^{(2)}</em>{1,i}}}\frac{\partial{z^{(2)}<em>{1,i}}}{\partial{W^{(2)}</em>{{1,1}}}} = (a^{(2)}<em>{1,i}-y^{(i)}){a^{(1)}</em>{1,i}}$$</p>
+<p>$$\frac{\partial{j^{(i)}}}{\partial{W^{(2)}<em>{1,j}}} = \frac{\partial{j^{(i)}}}{\partial{a^{(2)}</em>{1,i}}} \frac{\partial{a^{(2)}<em>{1,i}}}{\partial{z^{(2)}</em>{1,i}}}\frac{\partial{z^{(2)}<em>{1,i}}}{\partial{W^{(2)}</em>{{1,j}}}} = (a^{(2)}<em>{1,i}-y^{(i)}){a^{(1)}</em>{j,i}}$$</p>
+<p>$$\frac{\partial{J}}{\partial{W^{(2)}<em>{1,j}}} = \frac{1}{m}\sum</em>{i=1}^{m}(a^{(2)}<em>{1,i}-y^{(i)}){a^{(1)}</em>{j,i}} \
+= \frac{1}{m}[(a^{(2)}<em>{1,1}-y^{(1)})a^{(1)}</em>{j,1} + (a^{(2)}<em>{1,2}-y^{(2)})a^{(1)}</em>{j,2} + ... + (a^{(2)}<em>{1,m}-y^{(m)})a^{(1)}</em>{j,m}]\
+= \frac{1}{m} \begin{pmatrix}
+a^{(1)}<em>{j,1}  &amp; a^{(1)}</em>{j,2} &amp; ... &amp; a^{(1)}<em>{j,m}
+\end{pmatrix} \begin{pmatrix}
+a^{(2)}</em>{1,1}-y^{(1)}\
+a^{(2)}<em>{1,2}-y^{(2)}\
+...\
+a^{(2)}</em>{1,m}-y^{(m)}\
+\end{pmatrix}\
+$$
+$$\frac{\partial{J}}{\partial{W^{(2)}}} = {\begin{pmatrix}
+\frac{\partial{J}}{\partial{W^{(2)}<em>{1,1}}} \
+\frac{\partial{J}}{\partial{W^{(2)}</em>{1,2}}} \
+...\
+\frac{\partial{J}}{\partial{W^{(2)}<em>{1,j}}} \
+...\
+\frac{\partial{J}}{\partial{W^{(2)}</em>{1,n2}}} \
+\end{pmatrix}}_{n2×1}$$</p>
+<p>$$\frac{\partial{J}}{\partial{W^{(2)}}} = \frac{1}{m}{\begin{pmatrix}
+a^{(1)}<em>{1,1}  &amp; a^{(1)}</em>{1,2} &amp; ... &amp; a^{(1)}<em>{1,m} \
+a^{(1)}</em>{2,1}  &amp; a^{(1)}<em>{2,2} &amp; ... &amp; a^{(1)}</em>{2,m} \
+...\
+a^{(1)}<em>{j,1}  &amp; a^{(1)}</em>{j,2} &amp; ... &amp; a^{(1)}<em>{j,m} \
+...\
+a^{(1)}</em>{n2,1}  &amp; a^{(1)}<em>{n2,2} &amp; ... &amp; a^{(1)}</em>{n2,m} \
+\end{pmatrix}}<em>{n2×m}{\begin{pmatrix}
+a^{(2)}</em>{1,1}-y^{(1)}\
+a^{(2)}<em>{1,2}-y^{(2)}\
+...\
+a^{(2)}</em>{1,m}-y^{(m)}\
+\end{pmatrix}}_{m×1}$$</p>
+<h3 id="fracpartial-jpartial-w2">$\frac{\partial J}{\partial W^{(2)}}$</h3>
+<p>$$\frac{\partial{J}}{\partial{W^{(2)}}} = \frac{1}{m}A^{(1)}(A^{(2)}-Y)^{T} $$</p>
+<p>$$\frac{\partial{j^{(i)}}}{\partial{b^{(2)}<em>{1}}} = \frac{\partial{j^{(i)}}}{\partial{a^{(2)}</em>{1,i}}} \frac{\partial{a^{(2)}<em>{1,i}}}{\partial{z^{(2)}</em>{1,i}}}\frac{\partial{z^{(2)}<em>{1,i}}}{\partial{b^{(2)}</em>{{1}}}} = (a^{(2)}_{1,i}-y^{(i)})$$</p>
+<h3 id="fracpartial-jpartial-b2">$\frac{\partial J}{\partial b^{(2)}}$</h3>
+<p>$$\frac{\partial J}{\partial b^{(2)}}=\frac{1}{m}\sum_{i=1}^{m}\frac{\partial{j^{(i)}}}{\partial{b^{(2)}<em>{1}}}=\frac{1}{m}\sum</em>{i=1}^{m}(a^{(2)}<em>{1,i}-y^{(i)})=\frac{1}{m}\sum</em>{i=1}^{m}dZ^{(2)}=\frac{1}{m}\sum_{i=1}^{m}(A^{(2)}-Y)=\frac{1}{m}np.sum(A^{(2)}-Y) $$</p>
+<h3 id="%E4%BB%8E%E9%9A%90%E8%97%8F%E5%B1%82%E5%83%8F%E8%BE%93%E5%85%A5%E5%B1%82%E4%BC%A0%E6%92%AD">从隐藏层像输入层传播</h3>
+<p>$$\frac{\partial{z^{(2)}<em>{1,i}}}{\partial{a^{(1)}</em>{j,i}}} = W^{(2)}<em>{1,j} $$
+$$\frac{\partial{a^{(1)}</em>{j,i}}}{\partial{z^{(1)}<em>{j,i}}} = {a^{(1)}</em>{j,i}}(1-{a^{(1)}_{j,i}}) $$</p>
+<p>$$\frac{\partial{z^{(1)}<em>{j,i}}}{\partial{W^{(1)}</em>{j,k}}} = x^{(i)}_{k} $$</p>
+<p>$$\frac{\partial{z^{(1)}<em>{j,i}}}{\partial{b^{(1)}</em>{j}}} = 1 $$</p>
+<p>$$\frac{\partial{j^{(i)}}}{\partial{W^{(1)}<em>{j,k}}}=\frac{\partial{j^{(i)}}}{\partial{a^{(2)}</em>{1,i}}} \frac{\partial{a^{(2)}<em>{1,i}}}{\partial{z^{(2)}</em>{1,i}}} \frac{\partial{z^{(2)}<em>{1,i}}}{\partial{a^{(1)}</em>{j,i}}} \frac{\partial{a^{(1)}<em>{j,i}}}{\partial{z^{(1)}</em>{j,i}}} \frac{\partial{z^{(1)}<em>{j,i}}}{\partial{W^{(1)}</em>{j,k}}} = \frac{a^{(2)}<em>{1,i}-y^{(i)}}{a^{(2)}</em>{1,i}(1-a^{(2)}<em>{1,i})} * {a^{(2)}</em>{1,i}(1-a^{(2)}<em>{1,i})} * W^{(2)}</em>{1,j} * {a^{(1)}<em>{j,i}}(1-{a^{(1)}</em>{j,i}}) * x^{(i)}_{k} $$</p>
+<p>$$\frac{\partial{j^{(i)}}}{\partial{b^{(1)}<em>{j}}}=\frac{\partial{j^{(i)}}}{\partial{a^{(2)}</em>{1,i}}} \frac{\partial{a^{(2)}<em>{1,i}}}{\partial{z^{(2)}</em>{1,i}}} \frac{\partial{z^{(2)}<em>{1,i}}}{\partial{a^{(1)}</em>{j,i}}} \frac{\partial{a^{(1)}<em>{j,i}}}{\partial{z^{(1)}</em>{j,i}}} \frac{\partial{z^{(1)}<em>{j,i}}}{\partial{b^{(1)}</em>{j}}} = \frac{a^{(2)}<em>{1,i}-y^{(i)}}{a^{(2)}</em>{1,i}(1-a^{(2)}<em>{1,i})} * {a^{(2)}</em>{1,i}(1-a^{(2)}<em>{1,i})} * W^{(2)}</em>{1,j} * {a^{(1)}<em>{j,i}}(1-{a^{(1)}</em>{j,i}}) $$</p>
+<br>
+<br>
+<br>
+<p>$$\frac{\partial{j^{(i)}}}{\partial{W^{(1)}<em>{j,k}}}=\frac{\partial{j^{(i)}}}{\partial{a^{(2)}</em>{1,i}}} \frac{\partial{a^{(2)}<em>{1,i}}}{\partial{z^{(2)}</em>{1,i}}} * [\frac{\partial{z^{(2)}<em>{1,i}}}{\partial{W^{(1)}</em>{j,k}}}] \
+$$</p>
+<p>$$
+\frac{\partial{z^{(2)}<em>{1,i}}}{\partial{W^{(1)}</em>{j,k}}} = \sum_{j=1}^{n2}\frac{\partial{z^{(2)}<em>{1,i}}}{\partial{a^{(1)}</em>{j,i}}} \frac{\partial{a^{(1)}<em>{j,i}}}{\partial{z^{(1)}</em>{j,i}}} \frac{\partial{z^{(1)}<em>{j,i}}}{\partial{W^{(1)}</em>{j,k}}} = \sum_{j=1}^{n2}W^{(2)}<em>{1,j} * {a^{(1)}</em>{j,i}}(1-{a^{(1)}<em>{j,i}}) * x^{(i)}</em>{k}
+$$</p>
+<p>$$
+\frac{\partial{z^{(2)}<em>{1,i}}}{\partial{a^{(1)}</em>{j,i}}} \frac{\partial{a^{(1)}<em>{j,i}}}{\partial{z^{(1)}</em>{j,i}}} \frac{\partial{z^{(1)}<em>{j,i}}}{\partial{W^{(1)}</em>{j,k}}} = \frac{a^{(2)}<em>{1,i}-y^{(i)}}{a^{(2)}</em>{1,i}(1-a^{(2)}<em>{1,i})} * {a^{(2)}</em>{1,i}(1-a^{(2)}<em>{1,i})} * W^{(2)}</em>{1,j} * {a^{(1)}<em>{j,i}}(1-{a^{(1)}</em>{j,i}}) * x^{(i)}_{k} $$</p>
+<p>$$\frac{\partial{j^{(i)}}}{\partial{W^{(1)}<em>{j,k}}} = (a^{(2)}</em>{1,i}-y^{(i)}) * W^{(2)}<em>{1,j} * {a^{(1)}</em>{j,i}}(1-{a^{(1)}<em>{j,i}}) * x^{(i)}</em>{k}$$</p>
+<p>$$\frac{\partial{j^{(1)}}}{\partial{W^{(1)}<em>{j,k}}} = (a^{(2)}</em>{1,1}-y^{(1)}) * W^{(2)}<em>{1,j} * {a^{(1)}</em>{j,1}}(1-{a^{(1)}<em>{j,1}}) * x^{(1)}</em>{k}$$</p>
+<p>$$\frac{\partial{j^{(1)}}}{\partial{W^{(1)}<em>{1,1}}} = (a^{(2)}</em>{1,1}-y^{(1)}) * W^{(2)}<em>{1,1} * {a^{(1)}</em>{1,1}}(1-{a^{(1)}<em>{1,1}}) * x^{(1)}</em>{1}$$
+$$\frac{\partial{j^{(1)}}}{\partial{W^{(1)}<em>{1,2}}} = (a^{(2)}</em>{1,1}-y^{(1)}) * W^{(2)}<em>{1,1} * {a^{(1)}</em>{1,1}}(1-{a^{(1)}<em>{1,1}}) * x^{(1)}</em>{2}$$
+$$\frac{\partial{j^{(1)}}}{\partial{W^{(1)}<em>{j,k}}} = (a^{(2)}</em>{1,1}-y^{(1)}) * W^{(2)}<em>{1,1} * {a^{(1)}</em>{1,1}}(1-{a^{(1)}<em>{1,1}}) * x^{(1)}</em>{3}$$
+$$\frac{\partial{j^{(1)}}}{\partial{W^{(1)}<em>{j,k}}} = (a^{(2)}</em>{1,1}-y^{(1)}) * W^{(2)}<em>{1,1} * {a^{(1)}</em>{1,1}}(1-{a^{(1)}<em>{1,1}}) * x^{(1)}</em>{4}$$</p>
+<h3 id="fracpartial-jpartial-w1jk">$\frac{\partial J}{\partial W^{(1)}_{j,k}}$</h3>
+<p>$$\frac{\partial J}{\partial W^{(1)}<em>{j,k}} = \frac{1}{m}\sum</em>{i=1}^{m}\frac{\partial{j^{(i)}}}{\partial{W^{(1)}<em>{j,k}}} = \frac{1}{m}\sum</em>{i=1}^{m}[(a^{(2)}<em>{1,i}-y^{(i)}) * W^{(2)}</em>{1,j} * {a^{(1)}<em>{j,i}}(1-{a^{(1)}</em>{j,i}}) * x^{(i)}_{k}]$$</p>
+<p>$$\frac{\partial J}{\partial b^{(1)}<em>{j}} = \frac{1}{m}\sum</em>{i=1}^{m}\frac{\partial{j^{(i)}}}{\partial{W^{(1)}<em>{j,k}}} = \frac{1}{m}\sum</em>{i=1}^{m}[(a^{(2)}<em>{1,i}-y^{(i)}) * W^{(2)}</em>{1,j} * {a^{(1)}<em>{j,i}}(1-{a^{(1)}</em>{j,i}})]$$</p>
+<p>$$
+\frac{\partial J}{\partial W^{(1)}} = {
+\begin{pmatrix}
+\frac{\partial J}{\partial b^{(1)}<em>{1}} \
+\frac{\partial J}{\partial b^{(1)}</em>{2}} \
+...\
+\frac{\partial J}{\partial b^{(1)}<em>{j}} \
+...\
+\frac{\partial J}{\partial b^{(1)}</em>{n2}}
+\end{pmatrix}
+}_{n2×1}
+$$</p>
+<p>$$
+\frac{\partial J}{\partial W^{(1)}} = {
+\begin{pmatrix}
+\frac{\partial J}{\partial W^{(1)}<em>{1,1}} &amp; \frac{\partial J}{\partial W^{(1)}</em>{2,1}} &amp; ...&amp; \frac{\partial J}{\partial W^{(1)}<em>{j,1}} &amp;... &amp; \frac{\partial J}{\partial W^{(1)}</em>{n2,1}}\
+\frac{\partial J}{\partial W^{(1)}<em>{1,2}} &amp; \frac{\partial J}{\partial W^{(1)}</em>{2,2}} &amp; ...&amp; \frac{\partial J}{\partial W^{(1)}<em>{j,2}} &amp;... &amp; \frac{\partial J}{\partial W^{(1)}</em>{n2,2}}\
+...&amp;...&amp;...&amp; ...&amp;...&amp;...&amp;\
+\frac{\partial J}{\partial W^{(1)}<em>{1,k}} &amp; \frac{\partial J}{\partial W^{(1)}</em>{2,k}} &amp; ...&amp; \frac{\partial J}{\partial W^{(1)}<em>{j,k}} &amp;... &amp; \frac{\partial J}{\partial W^{(1)}</em>{n2,k}}\
+...&amp;...&amp;...&amp; ...&amp;...&amp;...&amp;\
+\frac{\partial J}{\partial W^{(1)}<em>{1,n1}} &amp; \frac{\partial J}{\partial W^{(1)}</em>{2,n1}} &amp; ...&amp; \frac{\partial J}{\partial W^{(1)}<em>{j,n1}} &amp;... &amp; \frac{\partial J}{\partial W^{(1)}</em>{n2,n1}}
+\end{pmatrix}
+}_{n1×n2}
+$$</p>
+<p>$$
+{\begin{pmatrix}
+x^{(1)}<em>{1} &amp; x^{(2)}</em>{1} &amp;...&amp; x^{(i)}<em>{1} &amp;...&amp; x^{(m)}</em>{1} &amp; \
+x^{(1)}<em>{2} &amp; x^{(2)}</em>{2} &amp;...&amp; x^{(i)}<em>{2} &amp;...&amp; x^{(m)}</em>{2} &amp; \
+...&amp;...&amp;...&amp;...&amp;...&amp;...\
+x^{(1)}<em>{j} &amp; x^{(2)}</em>{j} &amp;...&amp; x^{(i)}<em>{j} &amp;...&amp; x^{(m)}</em>{j} &amp; \
+...&amp;...&amp;...&amp;...&amp;...&amp;...\
+x^{(1)}<em>{n1} &amp; x^{(2)}</em>{n1} &amp;...&amp; x^{(i)}<em>{n1} &amp;...&amp; x^{(m)}</em>{n1} &amp; \
+\end{pmatrix}}_{n1×m}</p>
+<pre><code>{\begin{pmatrix}
+  a^{(2)}_{1,1}-y^{(1)} \\
+  a^{(2)}_{1,2}-y^{(2)} \\
+  ...\\
+  a^{(2)}_{1,m}-y^{(m)} \\
+\end{pmatrix}}_{m×1}
+
+\odot
+
+{\begin{pmatrix}
+  a^{(1)}_{1,1}(1-a^{(1)}_{1,1}) &amp; a^{(1)}_{2,1}(1-a^{(1)}_{2,1}) &amp; ... &amp; a^{(1)}_{n2,1}(1-a^{(1)}_{n2,1}) \\
+
+  a^{(1)}_{1,2}(1-a^{(1)}_{1,2}) &amp; a^{(1)}_{2,2}(1-a^{(1)}_{2,2}) &amp; ... &amp; a^{(1)}_{n2,2}(1-a^{(1)}_{n2,2}) \\
+  ...\\
+  a^{(1)}_{1,m}(1-a^{(1)}_{1,m}) &amp; a^{(1)}_{2,m}(1-a^{(1)}_{2,m}) &amp; ... &amp; a^{(1)}_{n2,m}(1-a^{(1)}_{n2,m}) \\
+\end{pmatrix}}_{m×n2}
+\odot
+{\begin{pmatrix}
+  W^{(2)}_{1,1}  &amp; W^{(2)}_{1,2} &amp; ... &amp; W^{(2)}_{1,n2}
+\end{pmatrix}}_{1×n2}
+</code></pre>
+<p>$$</p>
+<h3 id="a2-ytw2t">$(A^{(2)}-Y)^{T}(W^{(2)})^{T}$</h3>
+<p>$$
+{\begin{pmatrix}
+a^{(2)}<em>{1,1}-y^{(1)} \
+a^{(2)}</em>{1,2}-y^{(2)} \
+...\
+a^{(2)}<em>{1,m}-y^{(m)} \
+\end{pmatrix}}</em>{m×1}
+{\begin{pmatrix}
+W^{(2)}<em>{1,1}  &amp; W^{(2)}</em>{1,2} &amp; ... &amp; W^{(2)}<em>{1,n2}
+\end{pmatrix}}</em>{1×n2}=</p>
+<pre><code>{
+  \begin{pmatrix}
+    (a^{(2)}_{1,1}-y^{(1)})W^{(2)}_{1,1} &amp; (a^{(2)}_{1,1}-y^{(1)})W^{(2)}_{1,2} &amp; ... (a^{(2)}_{1,1}-y^{(1)})W^{(2)}_{1,n2} \\
+    (a^{(2)}_{1,2}-y^{(2)})W^{(2)}_{1,1} &amp; (a^{(2)}_{1,2}-y^{(2)})W^{(2)}_{1,2} &amp; ... (a^{(2)}_{1,2}-y^{(2)})W^{(2)}_{1,n2} \\
+    ...&amp;...&amp;...\\
+    (a^{(2)}_{1,m}-y^{(m)})W^{(2)}_{1,1} &amp; (a^{(2)}_{m}-y^{(m)})W^{(2)}_{1,2} &amp; ... (a^{(2)}_{1,m}-y^{(m)})W^{(2)}_{1,n2} \\
+  \end{pmatrix}
+}_{m×n2}
+</code></pre>
+<p>$$</p>
+<h3 id="a2-ytw2todotsigmaz2t">$[(A^{(2)}-Y)^{T}(W^{(2)})^{T}]\odot(\sigma^{'}Z^{(2)})^{T}$</h3>
+<p>$$
+{
+\begin{pmatrix}
+(a^{(2)}<em>{1,1}-y^{(1)})W^{(2)}</em>{1,1} &amp; (a^{(2)}<em>{1,1}-y^{(1)})W^{(2)}</em>{1,2} &amp; ... &amp; (a^{(2)}<em>{1,1}-y^{(1)})W^{(2)}</em>{1,n2} \
+(a^{(2)}<em>{1,2}-y^{(2)})W^{(2)}</em>{1,1} &amp; (a^{(2)}<em>{1,2}-y^{(2)})W^{(2)}</em>{1,2} &amp; ... &amp; (a^{(2)}<em>{1,2}-y^{(2)})W^{(2)}</em>{1,n2} \
+...&amp;...&amp;...\
+(a^{(2)}<em>{1,m}-y^{(m)})W^{(2)}</em>{1,1} &amp; (a^{(2)}<em>{m}-y^{(m)})W^{(2)}</em>{1,2} &amp; ... &amp; (a^{(2)}<em>{1,m}-y^{(m)})W^{(2)}</em>{1,n2} \
+\end{pmatrix}
+}<em>{m×n2}
+\odot
+{\begin{pmatrix}
+a^{(1)}</em>{1,1}(1-a^{(1)}<em>{1,1}) &amp; a^{(1)}</em>{2,1}(1-a^{(1)}<em>{2,1}) &amp; ... &amp; a^{(1)}</em>{n2,1}(1-a^{(1)}_{n2,1}) \</p>
+<pre><code>  a^{(1)}_{1,2}(1-a^{(1)}_{1,2}) &amp; a^{(1)}_{2,2}(1-a^{(1)}_{2,2}) &amp; ... &amp; a^{(1)}_{n2,2}(1-a^{(1)}_{n2,2}) \\
+  ...\\
+  a^{(1)}_{1,m}(1-a^{(1)}_{1,m}) &amp; a^{(1)}_{2,m}(1-a^{(1)}_{2,m}) &amp; ... &amp; a^{(1)}_{n2,m}(1-a^{(1)}_{n2,m}) \\
+\end{pmatrix}}_{m×n2}
+</code></pre>
+<p>$$</p>
+<h3 id="fracpartial-jpartial-w1-xa2-ytw2todotsigmaz2t">$\frac{\partial J}{\partial W^{(1)}} = X{[(A^{(2)}-Y)^{T}(W^{(2)})^{T}]\odot(\sigma^{'}Z^{(2)})^{T}}$</h3>
+<h3 id="fracpartial-jpartial-b1-a2-ytw2todotsigmaz2t">$\frac{\partial J}{\partial b^{(1)}} = [(A^{(2)}-Y)^{T}(W^{(2)})^{T}]\odot(\sigma^{'}Z^{(2)})^{T}$</h3>
+<p>$$</p>
+<p>{\begin{pmatrix}
+a^{(1)}<em>{1,1}(1-a^{(1)}</em>{1,1}) &amp; a^{(1)}<em>{1,2}(1-a^{(1)}</em>{1,2}) &amp; ... &amp; a^{(1)}<em>{1,m}(1-a^{(1)}</em>{1,m})\
+a^{(1)}<em>{2,1}(1-a^{(1)}</em>{2,1}) &amp; a^{(1)}<em>{2,2}(1-a^{(1)}</em>{2,2}) &amp; ... &amp; a^{(1)}<em>{2,m}(1-a^{(1)}</em>{2,m})\
+...\
+a^{(1)}<em>{n2,1}(1-a^{(1)}</em>{n2,1}) &amp; a^{(1)}<em>{n2,2}(1-a^{(1)}</em>{n2,2}) &amp; ... &amp; a^{(1)}<em>{n2,m}(1-a^{(1)}</em>{n2,m}) \
+\end{pmatrix}}_{n2×m}
+$$</p>
+<h3 id="a2-y">$A^{(2)}-Y$</h3>
+<p>$$
+{\begin{pmatrix}
+a^{(2)}<em>{1,1}-y^{(1)} &amp;
+a^{(2)}</em>{1,2}-y^{(2)} &amp; ... &amp;
+a^{(2)}<em>{1,m}-y^{(m)}
+\end{pmatrix}}</em>{1×m}
+$$
+$$\frac{\partial{j^{(2)}}}{\partial{W^{(1)}<em>{j,k}}} = (a^{(2)}</em>{1,2}-y^{(2)}) * W^{(2)}<em>{1,j} * {a^{(1)}</em>{j,2}}(1-{a^{(1)}<em>{j,2}}) * x^{(2)}</em>{k}$$</p>
+<p>Forward Propagation:</p>
+<ul>
+<li>You get X</li>
+<li>You compute $A = \sigma(w^T X + b) = (a^{(0)}, a^{(1)}, ..., a^{(m-1)}, a^{(m)})$</li>
+<li>You calculate the cost function: $J = -\frac{1}{m}\sum_{i=1}^{m}y^{(i)}\log(a^{(i)})+(1-y^{(i)})\log(1-a^{(i)})$
+$$
+\begin{matrix}
+1 &amp; x &amp; x^2 \
+1 &amp; y &amp; y^2 \
+1 &amp; z &amp; z^2 \
+\end{matrix}
+$$</li>
+</ul>
+<p>$$
+\begin{bmatrix}
+a_{00}&amp;a_{01}\\
+a_{10}&amp;a_{11}
+\end{bmatrix}
+$$</p>
+<p>$$
+\begin{bmatrix}
+x^{(1)}<em>{1}\
+x^{(1)}</em>{2} \
+x^{(1)}<em>{j}\
+x^{(1)}</em>{n1}
+\end{bmatrix}
+$$</p>
+
+</body>
+</html>
